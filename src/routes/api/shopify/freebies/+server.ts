@@ -120,12 +120,11 @@ export const GET: RequestHandler = async ({ url }) => {
 		result = await getFreebies(limit);
 	}
 
-	console.log({ result: result.products['nodes'] });
+	const productsNodes = result?.products?.nodes ?? [];
 
-	if (result.products['nodes'].length > 0) {
-		const productsResultData = result.products.nodes;
+	if (productsNodes.length > 0) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		freebies = productsResultData.map((val: any) => {
+		freebies = productsNodes.map((val: any) => {
 			const splittedId = val['id'].split('/');
 			const splittedVariantId = formatId(val['variants']['nodes'][0]['id']);
 
@@ -144,8 +143,8 @@ export const GET: RequestHandler = async ({ url }) => {
 export const POST: RequestHandler = async (event) => {
 	const { searchTxt, cursor, isNext } = await event.request.json();
 	const result = await getSearchFreebie(searchTxt, cursor, isNext);
-	let data;
-	if (result.products.nodes.length) {
+	let data = { products: [], pageInfo: null };
+	if (result?.products?.nodes?.length) {
 		data = {
 			products: result.products.nodes,
 			pageInfo: result.products.pageInfo

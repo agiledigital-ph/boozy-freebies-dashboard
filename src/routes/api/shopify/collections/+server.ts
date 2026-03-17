@@ -1,10 +1,10 @@
 import { shopifyApiInit, type ShopifyApiClient } from '$lib/shopify/shopify.api.js';
 import type { ResourceItem } from '$lib/stores/productsDialogStore';
-import { error, json, type RequestHandler } from '@sveltejs/kit';
+import { json, type RequestHandler } from '@sveltejs/kit';
 import { inspect } from 'util';
 
 const { clientGQL }: ShopifyApiClient = shopifyApiInit();
-
+console.log('clientGQL', clientGQL);
 const searchCollections = async (
 	search: string,
 	cursor: string | null = null,
@@ -55,13 +55,11 @@ export const POST: RequestHandler = async (event) => {
 
 	console.log(`getSearchCollections result ${inspect(result)}`);
 
-	if (!result) {
-		return error(500, { message: 'Internal server error' });
-	}
+	const collectionsEdges = result?.collections?.edges ?? [];
 
-	if (result.collections.edges.length) {
+	if (collectionsEdges.length > 0) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		collections = result.collections.edges.map((val: any) => {
+		collections = collectionsEdges.map((val: any) => {
 			const splittedId = val.node['id'].split('/');
 			return {
 				name: val.node['title'],

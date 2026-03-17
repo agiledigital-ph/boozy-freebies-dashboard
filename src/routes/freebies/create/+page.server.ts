@@ -40,19 +40,18 @@ export const load: PageServerLoad = async ({ fetch }) => {
 
 	if (productsResult) {
 		const productsResultData = await productsResult.json();
-		products = productsResultData.products;
-		console.log({ products });
+		products = productsResultData.products ?? [];
 	}
 
 	if (freebiesResult) {
 		const freebiesResultData = await freebiesResult.json();
-		freebies = freebiesResultData.freebies;
-		console.log({ freebies });
+		freebies = freebiesResultData.freebies ?? [];
 	}
 
-	if (collectionsResult.collections.edges.length > 0) {
+	const collectionsEdges = collectionsResult?.collections?.edges ?? [];
+	if (collectionsEdges.length > 0) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		collections = collectionsResult.collections.edges.map((val: any) => {
+		collections = collectionsEdges.map((val: any) => {
 			const splittedId = val.node['id'].split('/');
 			return {
 				name: val.node['title'],

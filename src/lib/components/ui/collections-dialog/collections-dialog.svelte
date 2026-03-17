@@ -50,12 +50,16 @@
 			body: JSON.stringify(data)
 		});
 
+		if (!response.ok) {
+			console.error('Failed to fetch collections');
+			return;
+		}
+
 		const collectionData = await response.json();
 		console.log({ collectionData });
 
-		if (collectionData.collections.length > 0) {
-			freebieFormStore.setCollections(collectionData.collections);
-		}
+		const collections = collectionData.collections ?? [];
+		freebieFormStore.setCollections(collections);
 	};
 </script>
 

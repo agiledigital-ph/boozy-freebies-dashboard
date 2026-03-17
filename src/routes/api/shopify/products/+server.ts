@@ -58,12 +58,11 @@ export const GET: RequestHandler = async ({ url }) => {
 		result = await getProducts(limit);
 	}
 
-	console.log({ result: result.products['nodes'] });
+	const productsNodes = result?.products?.nodes ?? [];
 
-	if (result.products['nodes'].length > 0) {
-		const productsResultData = result.products.nodes;
+	if (productsNodes.length > 0) {
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		products = productsResultData.map((val: any) => {
+		products = productsNodes.map((val: any) => {
 			const splittedId = val['id'].split('/');
 			return {
 				name: val['title'],
